@@ -34,6 +34,8 @@ app.listen(3000,()=>{
   console.log('server up on 3000');
 });
 
+module.exports={app};
+
 // //creating new todo
 // var newTodo=new Todo({
 //   text:'  edit this video '
