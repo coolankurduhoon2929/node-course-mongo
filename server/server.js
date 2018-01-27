@@ -6,7 +6,7 @@ var {Todo}=require('./models/todos');
 var {user}=require('./models/user');
 
 var app=express();
-
+const port=process.env.PORT || 3000;
 //middleware
 app.use(bodyParser.json());
 
@@ -51,8 +51,8 @@ app.get('/todos/:id',(req,res)=>{
 
 
 
-app.listen(3000,()=>{
-  console.log('server up on 3000');
+app.listen(port,()=>{
+  console.log(`server up on ${port}`);
 });
 
 module.exports={app};
