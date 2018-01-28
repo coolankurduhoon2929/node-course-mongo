@@ -5,6 +5,7 @@ var {mongoose}=require('./db/mongoose');
 var {Todo}=require('./models/todos');
 var {user}=require('./models/user');
 const _=require('lodash');
+var {authenticate}=require('./middleware/authenticate');
 
 var app=express();
 const port=process.env.PORT || 3000;
@@ -103,6 +104,13 @@ app.post('/users',(req,res)=>{
   }).catch((err)=>{
     res.status(400).send(err);
   });
+});
+
+
+
+//making private route
+app.get('/users/me',authenticate,(req,res)=>{
+  res.send(req.user);
 });
 
 
