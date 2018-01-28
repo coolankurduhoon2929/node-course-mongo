@@ -64,17 +64,6 @@ app.delete('/todos/:id',(req,res)=>{
   });
 });
 
-//POST /users
-app.post('/users',(req,res)=>{
-  var data=_.pick(req.body,['email','password']);
-  var user1=new user(data);
-  user1.save().then((docs)=>{
-    res.send(docs);
-  },(err)=>{
-    res.status(400).send(err);
-  });
-});
-
 //to update resource...
 app.patch('/todos/:id',(req,res)=>{
   var id=req.params.id;
@@ -99,6 +88,21 @@ app.patch('/todos/:id',(req,res)=>{
     res.status(400).send('Some error');
   });
 
+});
+
+
+//POST /users
+app.post('/users',(req,res)=>{
+  var data=_.pick(req.body,['email','password']);
+  var user1=new user(data);
+  user1.save().then((docs)=>{
+    return user1.generateAuthToken();
+    // res.send(docs);
+  }).then((token)=>{
+    res.header('x-auth',token).send(user1);
+  }).catch((err)=>{
+    res.status(400).send(err);
+  });
 });
 
 
