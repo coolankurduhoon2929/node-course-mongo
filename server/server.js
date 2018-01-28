@@ -47,7 +47,7 @@ app.get('/todos/:id',(req,res)=>{
     res.status(400).send('Some error');
   });
 });
-console.log('hello');
+
 app.delete('/todos/:id',(req,res)=>{
   var id=req.params.id;
   console.log(id);
@@ -73,6 +73,32 @@ app.post('/users',(req,res)=>{
   },(err)=>{
     res.status(400).send(err);
   });
+});
+
+//to update resource...
+app.patch('/todos/:id',(req,res)=>{
+  var id=req.params.id;
+  var body=_.pick(req.body,['text','completed']);
+  if(!ObjectID.isValid(id)){
+    return res.status(404).send('Id not valid');
+  }
+
+  if(_.isBoolean(body.completed) && body.completed){
+      body.completedAt=new Date().getTime();
+  }
+  else{
+    body.completed=false;
+    body.completedAt=null;
+  }
+  Todo.findByIdAndUpdate(id,{$set:body},{new:true }).then((doc)=>{
+    if(!doc){
+      return res.status(404).send('Does not exist');
+    }
+    res.send({todo:doc});
+  }).catch((e)=>{
+    res.status(400).send('Some error');
+  });
+
 });
 
 
