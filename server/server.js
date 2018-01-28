@@ -4,6 +4,7 @@ const {ObjectID}=require('mongodb');
 var {mongoose}=require('./db/mongoose');
 var {Todo}=require('./models/todos');
 var {user}=require('./models/user');
+const _=require('lodash');
 
 var app=express();
 const port=process.env.PORT || 3000;
@@ -46,9 +47,33 @@ app.get('/todos/:id',(req,res)=>{
     res.status(400).send('Some error');
   });
 });
+console.log('hello');
+app.delete('/todos/:id',(req,res)=>{
+  var id=req.params.id;
+  console.log(id);
+  if(!ObjectID.isValid(id)){
+    return res.status(404).send('Id not valid');
+  }
+  Todo.findByIdAndRemove(id).then((doc)=>{
+    if(!doc){
+      return res.status(404).send('ID does not exist');
+    }
+    res.send(doc);
+  }).catch((err)=>{
+    res.send(400).send('some error');
+  });
+});
 
-
-
+//POST /users
+app.post('/users',(req,res)=>{
+  var data=_.pick(req.body,['email','password']);
+  var user1=new user(data);
+  user1.save().then((docs)=>{
+    res.send(docs);
+  },(err)=>{
+    res.status(400).send(err);
+  });
+});
 
 
 app.listen(port,()=>{
